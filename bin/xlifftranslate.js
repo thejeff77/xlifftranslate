@@ -69,9 +69,10 @@ var q = async.queue(function (task, callback) {
     return;
   }
 
-  // skip if the caller wants to skip source/target that are unequal.
-  if (sourceText.includes('_') || sourceText === sourceText.toLowerCase()) {
-    // CASE: Target is blank and source is non-blank, always continue to translation.
+  // skip if source text looks like a key (e.g. "failed_to_import_audio") rather than English text.
+  // Keys contain underscores or are all-lowercase, but crucially have no spaces.
+  // Sentences like "%d song(s) already imported" are lowercase but contain spaces.
+  if (!sourceText.includes(' ') && (sourceText.includes('_') || sourceText === sourceText.toLowerCase())) {
     numSkippedDueToKeyInSource++;
     if (verbose) {
       console.info("Skipping Translation due to key in source");
