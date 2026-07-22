@@ -91,6 +91,12 @@ var q = async.queue(function (task, callback) {
     strippedPreTranslateText = strippedPreTranslateText.trim();
   }
   if (strippedPreTranslateText === '') {
+    // If target already has a different translation, don't overwrite it with source
+    if (skipDifferent && targetText !== '' && targetText != null && sourceText !== targetText) {
+      numSkipped++;
+      callback();
+      return;
+    }
     target.html(sourceText.trim());
     callback();
     return;
