@@ -193,13 +193,8 @@ function run() {
       }
 
       var locale = fileParts[1];
-      var lang = locale;
-      if (lang.indexOf('-') !== -1) {
-        lang = lang.split('-')[0];
-      }
-      if (lang.indexOf('_') !== -1) {
-        lang = lang.split('_')[0];
-      }
+      // Google takes pt-PT as its own target; bare "pt" is Brazilian.
+      var lang = /^pt[-_]PT$/.test(locale) ? 'pt-PT' : locale.split(/[-_]/)[0];
       if (verbose) {
           console.log('Language found: ' + lang);
       }
