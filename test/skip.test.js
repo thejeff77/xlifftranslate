@@ -36,9 +36,9 @@ function run(files, extraArgs) {
   }
 }
 
-// Xcode exports an untranslated .strings value as an empty target with no state attribute. A
-// storyboard key that bartycrouch's defaultToBase filled with the base text exports as a target
-// equal to its source.
+// Xcode exports an untranslated .strings value (in a locale file that exists) as an empty target
+// with no state attribute. A storyboard key that bartycrouch's defaultToBase filled with the base
+// text exports as a target equal to its source.
 const FILES = {
   'Base.lproj/Localizable.strings': [
     ['blank', 'Delete song', ''],
@@ -51,6 +51,7 @@ const FILES = {
     ['sb_blank', 'Points', ''],
     ['sb_different', 'Points', 'Punkte'],
     ['sb_equal', 'Album', 'Album'],
+    ['sb_ignored_equal', 'JSON', 'JSON'],
   ],
 };
 
@@ -64,7 +65,8 @@ const FILES = {
   assert.strictEqual(result.sb_blank, 'de:Points', 'a blank storyboard target is translated');
   assert.strictEqual(result.sb_different, 'Punkte', 'a translated storyboard target is kept');
   assert.strictEqual(result.sb_equal, 'de:Album', 'a storyboard target equal to its source is pre-filled base text and is translated');
-  assert.ok(/^Skipped: 4, Translated: 3,/.test(summary), 'summary counts: ' + summary);
+  assert.strictEqual(result.sb_ignored_equal, 'JSON', 'an all-ignored storyboard source keeps its value');
+  assert.ok(/^Skipped: 4, Translated: 3,/.test(summary), 'summary counts (an all-ignored storyboard unit equal to its source is written back, not skipped): ' + summary);
 }
 
 {
