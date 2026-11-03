@@ -57,6 +57,11 @@ var q = async.queue(function (task, callback) {
   var target = node.find('target');
   var sourceText = node.find('source').html();
   var targetText = node.find('target').html();
+  // In a storyboard or XIB a target equal to its source is pre-filled base text (bartycrouch
+  // defaultToBase), not a pin, so it still counts as untranslated.
+  var fromInterfaceBuilder = /\.(storyboard|xib)$/i.test(node.closest('file').attr('original') || '');
+  var keepFilledTarget = skipDifferent && targetText !== '' && targetText != null &&
+      (sourceText !== targetText || !fromInterfaceBuilder);
 
   // console.log("Node: " + node.toString() + "Lang: " + lang + ", Source: " + source + ", Target: " + target + ", Source Text: " + sourceText + ", Target Text: " + targetText)
 
@@ -91,8 +96,7 @@ var q = async.queue(function (task, callback) {
     strippedPreTranslateText = strippedPreTranslateText.trim();
   }
   if (strippedPreTranslateText === '') {
-    // Under skipDifferent a filled target is never overwritten, not even by its own source
-    if (skipDifferent && targetText !== '' && targetText != null) {
+    if (keepFilledTarget) {
       numSkipped++;
       callback();
       return;
@@ -111,11 +115,9 @@ var q = async.queue(function (task, callback) {
       console.info("Translating pair with blank target, source: " + sourceText + ", target: " + targetText);
     }
   }
-  // Under skipDifferent only a blank target is untranslated. A target equal to its source is a
-  // deliberate pin (a brand, a unit, a word the language shares), not a miss: leave it alone.
-  else if (skipDifferent === true) {
+  else if (keepFilledTarget) {
     if (verbose) {
-      console.info("Skipped: target already filled (skipDifferent)" + ", Source: " + sourceText + ", Target: " + targetText);
+      console.info("Skipped: due to skipDifferent flag" + ", Source: " + sourceText + ", Target: " + targetText);
     }
     numSkipped++;
     callback();

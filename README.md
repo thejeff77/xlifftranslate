@@ -14,7 +14,7 @@
 - `--verbose "true"` adds verbose output with translations.
 - `--ignoreText "ignoreme ignoremetoo"` ignores the specified strings with default delimiter " ".
 - `--ignoreDelimiter " "` Specify the delimiter for the --ignoreText option
-- `--skipDifferent "true"` Translate only strings whose target is blank; a filled target is left alone, whether it differs from the source or equals it (a deliberate English pin).
+- `--skipDifferent "true"` Translate only strings whose target is blank; a filled target is left alone, whether it differs from the source or equals it (a deliberate pin). Exception: in a `.storyboard` or `.xib` file a target equal to its source still counts as untranslated, because Interface Builder pipelines (bartycrouch's `defaultToBase`) pre-fill new keys with the base text. With this flag `--reTranslateExisting` re-translates nothing.
 - `--reTranslateExisting "true"` Re-translate everything, even if it has a non-blank value.
 
 ### Examples
