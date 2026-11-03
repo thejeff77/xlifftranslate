@@ -91,8 +91,8 @@ var q = async.queue(function (task, callback) {
     strippedPreTranslateText = strippedPreTranslateText.trim();
   }
   if (strippedPreTranslateText === '') {
-    // If target already has a different translation, don't overwrite it with source
-    if (skipDifferent && targetText !== '' && targetText != null && sourceText !== targetText) {
+    // Under skipDifferent a filled target is never overwritten, not even by its own source
+    if (skipDifferent && targetText !== '' && targetText != null) {
       numSkipped++;
       callback();
       return;
@@ -105,17 +105,17 @@ var q = async.queue(function (task, callback) {
     console.log('Stripped Pre Translate Text:' + strippedPreTranslateText);
   }
 
-  // skip if the caller wants to skip source/target that are unequal.
   if ((targetText === '' || targetText == null) && sourceText !== '') {
     // CASE: Target is blank and source is non-blank, always continue to translation.
     if (verbose) {
       console.info("Translating pair with blank target, source: " + sourceText + ", target: " + targetText);
     }
   }
-  // skip if the caller wants to skip source/target that are unequal.
-  else if (skipDifferent === true && sourceText !== targetText) {
+  // Under skipDifferent only a blank target is untranslated. A target equal to its source is a
+  // deliberate pin (a brand, a unit, a word the language shares), not a miss: leave it alone.
+  else if (skipDifferent === true) {
     if (verbose) {
-      console.info("Skipped: due to skipDifferent flag" + ", Source: " + sourceText + ", Target: " + targetText);
+      console.info("Skipped: target already filled (skipDifferent)" + ", Source: " + sourceText + ", Target: " + targetText);
     }
     numSkipped++;
     callback();

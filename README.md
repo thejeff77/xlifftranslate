@@ -14,7 +14,7 @@
 - `--verbose "true"` adds verbose output with translations.
 - `--ignoreText "ignoreme ignoremetoo"` ignores the specified strings with default delimiter " ".
 - `--ignoreDelimiter " "` Specify the delimiter for the --ignoreText option
-- `--skipDifferent "true"` Skip translations of strings where source and target don't match.
+- `--skipDifferent "true"` Translate only strings whose target is blank; a filled target is left alone, whether it differs from the source or equals it (a deliberate English pin).
 - `--reTranslateExisting "true"` Re-translate everything, even if it has a non-blank value.
 
 ### Examples
